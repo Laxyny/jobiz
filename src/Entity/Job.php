@@ -61,6 +61,11 @@ class Job
         $this->jobApplications = new ArrayCollection();
     }
 
+    public function __toString(): string
+    {
+        return $this->title;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
