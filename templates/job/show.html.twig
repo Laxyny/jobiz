@@ -1,0 +1,33 @@
+{% extends "base.html.twig" %}
+{% block title %}
+	{{ job.title }}
+{% endblock %}
+{% block body %}
+	<section class="text-gray-400 bg-slate-700 body-font">
+		<div class="container px-5 py-24 mx-auto flex flex-wrap">
+			<div class="flex flex-wrap -mx-4 lg:w-1/2 sm:w-2/3 content-between">
+				<div class="w-full sm:p-4 px-4 mb-6">
+					<h1 class="title-font font-medium text-xl mb-2 text-white">{{ job.title }}</h1>
+					<div class="leading-relaxed">
+						{{ job.description|raw }}
+					</div>
+				</div>
+				<div class="p-4 sm:w-1/2 lg:w-1/4 w-1/2">
+                    <h2 class="title-font font-medium text-xl text-white pb-2">Pays :</h2>
+					<p class="leading-relaxed">{{ job.country }}</p>
+				</div>
+				<div class="p-4 sm:w-1/2 lg:w-1/4 w-1/2">
+					<h2 class="title-font font-medium text-xl text-white pb-2">Ville :</h2>
+					<p class="leading-relaxed">{{ job.city }}</p>
+				</div>
+				<div class="p-4 sm:w-1/2 lg:w-1/4 w-1/2">
+					<h2 class="title-font font-medium text-xl text-white pb-2">Télétravail :</h2>
+					<p class="leading-relaxed">{{ job.remoteAllowed ? 'Autorisé' : 'Non autorisé' }}</p>
+				</div>
+				<div class="p-4">
+					<h2 class="title-font font-medium text-xl text-white pb-2">Salaire :</h2>
+					<p class="leading-relaxed">{{ job.salaryRangeMin ? 'De ' ~ job.salaryRangeMin ~ ' à ' ~ job.salaryRangeMax ~ '€' : ''}}</p>
+				</div>
+			</div>
+		</section>
+	{% endblock %}
