@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+{% block title %}Contact - Jobiz
+{% endblock %}
+
+{% block body %}
+	<section class="text-gray-400 bg-slate-700 body-font relative">
+		<div class="container px-5 py-24 mx-auto">
+			<div class="flex flex-col text-center w-full mb-12">
+				<h1 class="sm:text-4xl text-3xl font-medium title-font mb-4 text-white">Contactez-nous</h1>
+				<p class="lg:w-2/3 mx-auto leading-relaxed text-base">
+					Vous avez une question ou une suggestion ? N'hésitez pas à nous contacter en utilisant le formulaire ci-dessous.
+				</p>
+			</div>
+			<div class="lg:w-1/2 md:w-2/3 mx-auto">
+				<form class="flex flex-wrap -m-2">
+					<div class="p-2 w-1/2">
+						<div class="relative">
+							<label for="name" class="leading-7 text-sm text-gray-400">Nom</label>
+							<input type="text" id="name" name="name" class="w-full bg-slate-800 bg-opacity-40 rounded border border-slate-600 focus:border-secondary focus:ring-2 focus:ring-secondary focus:bg-transparent text-base outline-none text-gray-100 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+						</div>
+					</div>
+					<div class="p-2 w-1/2">
+						<div class="relative">
+							<label for="email" class="leading-7 text-sm text-gray-400">Email</label>
+							<input type="email" id="email" name="email" class="w-full bg-slate-800 bg-opacity-40 rounded border border-slate-600 focus:border-secondary focus:ring-2 focus:ring-secondary focus:bg-transparent text-base outline-none text-gray-100 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+						</div>
+					</div>
+					<div class="p-2 w-full">
+						<div class="relative">
+							<label for="subject" class="leading-7 text-sm text-gray-400">Sujet</label>
+							<input type="text" id="subject" name="subject" class="w-full bg-slate-800 bg-opacity-40 rounded border border-slate-600 focus:border-secondary focus:ring-2 focus:ring-secondary focus:bg-transparent text-base outline-none text-gray-100 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+						</div>
+					</div>
+					<div class="p-2 w-full">
+						<div class="relative">
+							<label for="message" class="leading-7 text-sm text-gray-400">Message</label>
+							<textarea id="message" name="message" class="w-full bg-slate-800 bg-opacity-40 rounded border border-slate-600 focus:border-secondary focus:ring-2 focus:ring-secondary focus:bg-transparent h-32 text-base outline-none text-gray-100 py-1 px-3 resize-none leading-6 transition-colors duration-200 ease-in-out"></textarea>
+						</div>
+					</div>
+					<div class="p-2 w-full">
+						<button class="flex mx-auto text-white bg-secondary border-0 py-2 px-8 focus:outline-none hover:bg-teal-700 rounded text-lg">Envoyer</button>
+					</div>
+					<div class="p-2 w-full pt-8 mt-8 border-t border-slate-600 text-center">
+						<a href="mailto:contact@jobiz.com" class="text-secondary">contact@jobiz.com</a>
+						<p class="leading-normal my-5">
+							670 Rue Alfred Nobel
+							<br>34000 Montpellier, France
+						</p>
+					</div>
+				</form>
+			</div>
+		</div>
+	</section>
+{% endblock %}
