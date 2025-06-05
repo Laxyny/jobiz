@@ -7,6 +7,11 @@ use App\Repository\JobRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use App\Entity\JobApplication;
+use App\Form\PostulateTypeForm;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\Request;
 
 final class JobController extends AbstractController
 {
@@ -21,10 +26,40 @@ final class JobController extends AbstractController
     }
 
     #[Route('/job/{id}', name: 'app_job_show')]
-    public function show(Job $job): Response
-    {
+    public function show(
+        Job $job,
+        Security $security,
+        EntityManagerInterface $em,
+        Request $request
+    ): Response {
+        $user = $security->getUser();
+        $hasApplied = false;
+        $applicationForm = null;
+
+        if ($user) {
+            $existingApplication = $em->getRepository(JobApplication::class)
+                ->findOneBy(['Job' => $job, 'utilisateur' => $user]);
+
+            if ($existingApplication) {
+                $hasApplied = true;
+            } else {
+                $application = new JobApplication();
+                $application->setJob($job);
+                $application->setUtilisateur($user);
+                $application->setCreatedAt(new \DateTimeImmutable());
+
+                $applicationForm = $this->createForm(PostulateTypeForm::class, $application, [
+                    'action' => $this->generateUrl('app_job_postulate', ['id' => $job->getId()]),
+                    'method' => 'POST',
+                ]);
+            }
+        }
+
         return $this->render('job/show.html.twig', [
             'job' => $job,
+            'hasApplied' => $hasApplied,
+            'applicationForm' => $applicationForm ? $applicationForm->createView() : null,
+            'isLoggedIn' => ($user !== null)
         ]);
     }
 }
