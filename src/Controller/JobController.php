@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Job;
 use App\Repository\JobRepository;
+use App\Form\JobSearchType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -17,12 +18,17 @@ use Symfony\Component\HttpFoundation\Request;
 final class JobController extends AbstractController
 {
     #[Route('/job/list', name: 'app_job_list')]
-    public function index(JobRepository $jobRepository): Response
+    public function index(JobRepository $jobRepository, EntityManagerInterface $em, Request $request): Response
     {
         $jobs = $jobRepository->findAll();
 
+        $form = $this->createForm(JobSearchType::class, null, [
+            'method' => 'GET',
+        ]);
+
         return $this->render('job/list.html.twig', [
             'jobs' => $jobs,
+            'form' => $form->createView(),
         ]);
     }
 
@@ -90,6 +96,10 @@ final class JobController extends AbstractController
         $search = $request->query->get('search');
         $repository = $em->getRepository(Job::class);
 
+        $form = $this->createForm(JobSearchType::class, null, [
+            'method' => 'GET',
+        ]);
+
         if ($search) {
             // Recherche avec critère
             $jobs = $repository->createQueryBuilder('j')
@@ -107,7 +117,45 @@ final class JobController extends AbstractController
 
         return $this->render('job/list.html.twig', [
             'jobs' => $jobs,
-            'search' => $search
+            'search' => $search,
+            'form' => $form->createView(),
+        ]);
+    }
+
+
+    #[Route('/job/filtrer', name: 'app_job_filter')]
+    public function filter(Request $request, EntityManagerInterface $em): Response
+    {
+        $form = $this->createForm(JobSearchType::class, null, [
+            'method' => 'GET',
+        ]);
+        $form->handleRequest($request);
+
+        $qb = $em->getRepository(Job::class)->createQueryBuilder('j')
+            ->leftJoin('j.jobcategorys', 'c')
+            ->addSelect('c');
+
+        $data = $form->getData();
+        if ($form->isSubmitted() && $form->isValid()) {
+            if (!empty($data['category'])) {
+                $qb->andWhere(':cat MEMBER OF j.jobcategorys')
+                    ->setParameter('cat', $data['category']);
+            }
+            if (!empty($data['salary_min'])) {
+                $qb->andWhere('j.salary_range_min >= :salary_min')
+                    ->setParameter('salary_min', $data['salary_min']);
+            }
+            if (!empty($data['salary_max'])) {
+                $qb->andWhere('j.salary_range_max <= :salary_max')
+                    ->setParameter('salary_max', $data['salary_max']);
+            }
+        }
+
+        $jobs = $qb->orderBy('j.id', 'DESC')->getQuery()->getResult();
+
+        return $this->render('job/list.html.twig', [
+            'jobs' => $jobs,
+            'form' => $form->createView(),
         ]);
     }
 }
