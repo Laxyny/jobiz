@@ -21,10 +21,10 @@
 				<img width="120" src="{{ asset('images/logo-jobiz.png') }}" alt="AllJobs">
 			</a>
 			<nav class="md:ml-auto md:mr-auto flex flex-wrap items-center text-base justify-center">
-				<a class="mr-5 hover:text-teal-600 text-slate-700" href="/">Accueil</a>
+				<a class="mr-5 hover:text-teal-600 text-slate-700" href="{{ path('app_home') }}">Accueil</a>
 				<a class="mr-5 hover:text-teal-600 text-slate-700" href="{{ path('app_job_list') }}">Jobs</a>
-				<a class="mr-5 hover:text-teal-600 text-slate-700" href="/about">A propos</a>
-				<a class="mr-5 hover:text-teal-600 text-slate-700" href="/contact">Contact</a>
+				<a class="mr-5 hover:text-teal-600 text-slate-700" href="{{ path('app_about') }}">A propos</a>
+				<a class="mr-5 hover:text-teal-600 text-slate-700" href="{{ path('app_contact') }}">Contact</a>
 				<a class="mr-5 hover:text-teal-600 text-slate-700" href="{{ path('app_job_add') }}">Recruter</a>
 			</nav>
 			<div class="flex md:flex-nowrap flex-wrap justify-center items-end md:justify-start px-3">
