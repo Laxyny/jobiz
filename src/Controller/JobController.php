@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Entity\JobApplication;
 use App\Form\PostulateTypeForm;
+use App\Form\JobForm;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
@@ -60,6 +61,26 @@ final class JobController extends AbstractController
             'hasApplied' => $hasApplied,
             'applicationForm' => $applicationForm ? $applicationForm->createView() : null,
             'isLoggedIn' => ($user !== null)
+        ]);
+    }
+
+    #[Route('/ajouter-offre', name: 'app_job_add')]
+    public function addJob(Request $request, EntityManagerInterface $em): Response
+    {
+        $job = new Job();
+        $form = $this->createForm(JobForm::class, $job);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->persist($job);
+            $em->flush();
+
+            $this->addFlash('success', 'Offre ajoutée avec succès !');
+            return $this->redirectToRoute('app_home');
+        }
+
+        return $this->render('page/add_job.html.twig', [
+            'form' => $form->createView(),
         ]);
     }
 }
