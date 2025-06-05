@@ -122,40 +122,41 @@ final class JobController extends AbstractController
         ]);
     }
 
-
-    #[Route('/job/filtrer', name: 'app_job_filter')]
+    #[Route('/jobs/filtrer', name: 'app_job_filter')]
     public function filter(Request $request, EntityManagerInterface $em): Response
     {
-        $form = $this->createForm(JobSearchType::class, null, [
-            'method' => 'GET',
-        ]);
+        $form = $this->createForm(JobSearchType::class);
         $form->handleRequest($request);
-
+        
         $qb = $em->getRepository(Job::class)->createQueryBuilder('j')
             ->leftJoin('j.jobcategorys', 'c')
-            ->addSelect('c');
-
-        $data = $form->getData();
-        if ($form->isSubmitted() && $form->isValid()) {
-            if (!empty($data['category'])) {
-                $qb->andWhere(':cat MEMBER OF j.jobcategorys')
-                    ->setParameter('cat', $data['category']);
-            }
-            if (!empty($data['salary_min'])) {
-                $qb->andWhere('j.salary_range_min >= :salary_min')
-                    ->setParameter('salary_min', $data['salary_min']);
-            }
-            if (!empty($data['salary_max'])) {
-                $qb->andWhere('j.salary_range_max <= :salary_max')
-                    ->setParameter('salary_max', $data['salary_max']);
-            }
+            ->leftJoin('j.company', 'comp');
+        
+        $category = $request->query->get('category');
+        $salaryMin = $request->query->get('salary_min');
+        $salaryMax = $request->query->get('salary_max');
+        
+        if ($category) {
+            $qb->andWhere(':category MEMBER OF j.jobcategorys')
+                ->setParameter('category', $category);
         }
-
-        $jobs = $qb->orderBy('j.id', 'DESC')->getQuery()->getResult();
-
+        
+        if ($salaryMin) {
+            $qb->andWhere('j.salary_range_min >= :salaryMin')
+                ->setParameter('salaryMin', $salaryMin);
+        }
+        
+        if ($salaryMax) {
+            $qb->andWhere('j.salary_range_max <= :salaryMax')
+                ->setParameter('salaryMax', $salaryMax);
+        }
+        
+        $jobs = $qb->getQuery()->getResult();
+        
         return $this->render('job/list.html.twig', [
             'jobs' => $jobs,
             'form' => $form->createView(),
+            'filters_applied' => ($category || $salaryMin || $salaryMax)
         ]);
     }
 }

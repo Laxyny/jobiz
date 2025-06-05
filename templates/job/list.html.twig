@@ -2,55 +2,63 @@
 {% block title %}Liste des différents jobs
 {% endblock %}
 {% block body %}
-    <section class="text-gray-400 bg-slate-700 body-font container px-5 py-14 mx-auto">
-        <div class="container px-5 py-24 mx-auto">
+	<section class="text-gray-400 bg-slate-700 body-font container px-5 py-14 mx-auto">
+		<div
+			class="container px-5 py-24 mx-auto">
+			<div class="mb-8 bg-slate-800 p-6 rounded-lg">
+				<h3 class="text-xl font-medium text-white mb-4">Filtrer les offres</h3>
+				{{ form_start(form, {'method': 'GET', 'action': path('app_job_filter')}) }}
+				<div class="flex flex-wrap gap-4 items-end">
+					<div class="w-full md:w-1/3">
+						{{ form_label(form.category, null, {'label_attr': {'class': 'text-gray-200'}}) }}
+						{{ form_widget(form.category, {'attr': {'class': 'form-select w-full text-white bg-slate-800 border border-slate-600 rounded py-2 px-3'}}) }}
+					</div>
+					<div class="w-full md:w-1/4">
+						{{ form_label(form.salary_min, null, {'label_attr': {'class': 'text-gray-200'}}) }}
+						{{ form_widget(form.salary_min, {'attr': {'class': 'form-control w-full bg-slate-800 border border-slate-600 rounded py-2 px-3 text-gray-100'}}) }}
+					</div>
+					<div class="w-full md:w-1/4">
+						{{ form_label(form.salary_max, null, {'label_attr': {'class': 'text-gray-200'}}) }}
+						{{ form_widget(form.salary_max, {'attr': {'class': 'form-control w-full bg-slate-800 border border-slate-600 rounded py-2 px-3 text-gray-100'}}) }}
+					</div>
+					<div>
+						<button class="text-white bg-secondary border-0 py-2 px-6 rounded" type="submit">Filtrer</button>
+					</div>
+				</div>
+				{{ form_end(form) }}
+			</div>
 
-            {# Formulaire de filtrage #}
-            {% if form is defined %}
-                <div class="mb-8">
-                    {{ form_start(form, {'method': 'GET', 'action': path('app_job_filter')}) }}
-                    <div class="flex flex-wrap gap-4 items-end">
-                        <div class="w-full md:w-1/3">
-                            {{ form_label(form.category, null, {'label_attr': {'class': 'text-gray-200'}}) }}
-                            {{ form_widget(form.category, {'attr': {'class': 'form-select w-full text-white bg-slate-700 border border-slate-600 rounded py-2 px-3'}}) }}
-                        </div>
-                        <div class="w-full md:w-1/4">
-                            {{ form_label(form.salary_min, null, {'label_attr': {'class': 'text-gray-200'}}) }}
-                            {{ form_widget(form.salary_min, {'attr': {'class': 'form-control w-full bg-slate-800 border border-slate-600 rounded py-2 px-3 text-gray-100'}}) }}
-                        </div>
-                        <div class="w-full md:w-1/4">
-                            {{ form_label(form.salary_max, null, {'label_attr': {'class': 'text-gray-200'}}) }}
-                            {{ form_widget(form.salary_max, {'attr': {'class': 'form-control w-full bg-slate-800 border border-slate-600 rounded py-2 px-3 text-gray-100'}}) }}
-                        </div>
-                        <div>
-                            <button class="text-white bg-secondary border-0 py-2 px-6 rounded" type="submit">Filtrer</button>
-                        </div>
-                    </div>
-                    {{ form_end(form) }}
-                </div>
-            {% endif %}
+			{% if filters_applied is defined and filters_applied %}
+				<div class="flex flex-col text-center w-full mb-12">
+					<h2 class="text-2xl font-medium title-font mb-4 text-white">Résultats de filtrage</h2>
+					<p class="lg:w-2/3 mx-auto text-base">
+						{{ jobs|length }}
+						offre(s) trouvée(s)
+					</p>
+				</div>
+			{% endif %}
 
-            {% if search is defined and search %}
-                <div class="flex flex-col text-center w-full mb-12">
-                    <h2 class="text-2xl font-medium title-font mb-4 text-white">Résultats de recherche pour: "{{ search }}"</h2>
-                    <p class="lg:w-2/3 mx-auto text-base">
-                        {{ jobs|length }}
-                        résultat(s) trouvé(s)
-                    </p>
-                </div>
-            {% endif %}
+			{% if search is defined and search %}
+				<div class="flex flex-col text-center w-full mb-12">
+					<h2 class="text-2xl font-medium title-font mb-4 text-white">Résultats de recherche pour: "{{ search }}"</h2>
+					<p class="lg:w-2/3 mx-auto text-base">
+						{{ jobs|length }}
+						résultat(s) trouvé(s)
+					</p>
+				</div>
+			{% endif %}
 
-            <div class="flex flex-wrap sm:-m-4 -mx-4 -mb-10 -mt-4">
-                {% if jobs|length > 0 %}
-                    {% for job in jobs %}
-                        {% include 'jobs/_jobs_item.html.twig' with {'job': job} %}
-                    {% endfor %}
-                {% else %}
-                    <div class="w-full text-center py-10">
-                        <p class="text-xl text-white">Aucun job correspondant à votre recherche.</p>
-                    </div>
-                {% endif %}
-            </div>
-        </div>
-    </section>
+			<div class="flex flex-wrap sm:-m-4 -mx-4 -mb-10 -mt-4">
+				{% if jobs|length > 0 %}
+					{% for job in jobs %}
+						{% include 'jobs/_jobs_item.html.twig' with {'job': job} %}
+					{% endfor %}
+				{% else %}
+					<div class="w-full text-center py-10">
+						<p class="text-xl text-white">Aucun job correspondant à votre recherche.</p>
+					</div>
+				{% endif %}
+			</div>
+		</div>
+	</section>
 {% endblock %}
