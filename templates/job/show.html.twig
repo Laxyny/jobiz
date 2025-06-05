@@ -1,65 +1,79 @@
 {% extends "base.html.twig" %}
 {% block title %}
-    {{ job.title }}
+	{{ job.title }} - {{ job.company.name }}
 {% endblock %}
 {% block body %}
-    <section class="text-gray-400 bg-slate-700 body-font">
-        <div class="container px-5 py-24 mx-auto flex flex-wrap">
-            <div class="flex flex-wrap -mx-4 lg:w-1/2 sm:w-2/3 content-between">
-                <div class="w-full sm:p-4 px-4 mb-6">
-                    <h1 class="title-font font-medium text-xl mb-2 text-white">{{ job.title }}</h1>
-                    <div class="leading-relaxed">
-                        {{ job.description|raw }}
-                    </div>
-                </div>
-                <div class="p-4 sm:w-1/2 lg:w-1/4 w-1/2">
-                    <h2 class="title-font font-medium text-xl text-white pb-2">Pays :</h2>
-                    <p class="leading-relaxed">{{ job.country }}</p>
-                </div>
-                <div class="p-4 sm:w-1/2 lg:w-1/4 w-1/2">
-                    <h2 class="title-font font-medium text-xl text-white pb-2">Ville :</h2>
-                    <p class="leading-relaxed">{{ job.city }}</p>
-                </div>
-                <div class="p-4 sm:w-1/2 lg:w-1/4 w-1/2">
-                    <h2 class="title-font font-medium text-xl text-white pb-2">Télétravail :</h2>
-                    <p class="leading-relaxed">{{ job.remoteAllowed ? 'Autorisé' : 'Non autorisé' }}</p>
-                </div>
-                <div class="p-4">
-                    <h2 class="title-font font-medium text-xl text-white pb-2">Salaire :</h2>
-                    <p class="leading-relaxed">{{ job.salaryRangeMin ? 'De ' ~ job.salaryRangeMin ~ ' à ' ~ job.salaryRangeMax ~ '€' : ''}}</p>
-                </div>
-            </div>
-            
-            {# Colonne de droite pour le formulaire de candidature #}
-            <div class="lg:w-1/2 sm:w-1/3 w-full lg:pl-10 lg:py-6 mt-6 lg:mt-0">
-                <div class="bg-slate-800 p-6 rounded-lg">
-                    <h2 class="title-font font-medium text-xl text-white pb-4">Postuler à cette offre</h2>
-                    
-                    {% if not isLoggedIn %}
-                        <div class="bg-slate-700 p-4 rounded">
-                            <p class="text-white mb-3">Vous devez être connecté pour postuler à cette offre.</p>
-                            <a href="{{ path('app_login') }}" class="inline-flex text-white bg-secondary border-0 py-2 px-6 focus:outline-none hover:bg-teal-700 rounded">Se connecter</a>
-                        </div>
-                    {% elseif hasApplied %}
-                        <div class="bg-teal-900 text-white p-4 rounded">
-                            <p>Vous avez déjà postulé à cette offre.</p>
-                        </div>
-                    {% else %}
-                        {{ form_start(applicationForm, {'attr': {'class': 'flex flex-wrap -m-2'}}) }}
-                            <div class="p-2 w-full">
-                                <div class="relative">
-                                    {{ form_label(applicationForm.coverLetter, null, {'label_attr': {'class': 'leading-7 text-sm text-gray-400'}}) }}
-                                    {{ form_widget(applicationForm.coverLetter) }}
-                                    {{ form_errors(applicationForm.coverLetter) }}
-                                </div>
-                            </div>
-                            <div class="p-2 w-full">
-                                <button type="submit" class="flex mx-auto text-white bg-secondary border-0 py-2 px-8 focus:outline-none hover:bg-teal-700 rounded text-lg">Envoyer ma candidature</button>
-                            </div>
-                        {{ form_end(applicationForm) }}
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-    </section>
+	<section class="text-gray-400 bg-slate-700 body-font">
+		<div class="container px-5 py-24 mx-auto flex flex-wrap">
+			<div class="flex flex-wrap -mx-4 lg:w-1/2 sm:w-2/3 content-between">
+				<div class="w-full sm:p-4 px-4 mb-6">
+					<div class="flex items-center mb-4">
+						<h1 class="title-font font-medium text-3xl text-white">{{ job.title }}</h1>
+						<span class="bg-secondary text-white text-sm px-3 py-1 ml-4 rounded-full">{{ job.jobtype.name }}</span>
+					</div>
+
+					<div class="flex items-center mb-6">
+						<span class="inline-flex items-center text-gray-300 mr-6">
+							<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-5 h-5 mr-2" viewbox="0 0 24 24">
+								<path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+							</svg>
+							{{ job.company.name }}
+						</span>
+					</div>
+
+					<div class="leading-relaxed text-lg">
+						{{ job.description|raw }}
+					</div>
+				</div>
+
+				<div class="p-4 sm:w-1/2 lg:w-1/4 w-1/2">
+					<h2 class="title-font font-medium text-xl text-white pb-2">Pays :</h2>
+					<p class="leading-relaxed">{{ job.country }}</p>
+				</div>
+				<div class="p-4 sm:w-1/2 lg:w-1/4 w-1/2">
+					<h2 class="title-font font-medium text-xl text-white pb-2">Ville :</h2>
+					<p class="leading-relaxed">{{ job.city }}</p>
+				</div>
+				<div class="p-4 sm:w-1/2 lg:w-1/4 w-1/2">
+					<h2 class="title-font font-medium text-xl text-white pb-2">Télétravail :</h2>
+					<p class="leading-relaxed">{{ job.remoteAllowed ? 'Autorisé' : 'Non autorisé' }}</p>
+				</div>
+				<div class="p-4">
+					<h2 class="title-font font-medium text-xl text-white pb-2">Salaire :</h2>
+					<p class="leading-relaxed">{{ job.salaryRangeMin ? 'De ' ~ job.salaryRangeMin ~ ' à ' ~ job.salaryRangeMax ~ '€' : ''}}</p>
+				</div>
+			</div>
+
+			{# Colonne de droite pour le formulaire de candidature #}
+			<div class="lg:w-1/2 sm:w-1/3 w-full lg:pl-10 lg:py-6 mt-6 lg:mt-0">
+				<div class="bg-slate-800 p-6 rounded-lg">
+					<h2 class="title-font font-medium text-xl text-white pb-4">Postuler à cette offre</h2>
+
+					{% if not isLoggedIn %}
+						<div class="bg-slate-700 p-4 rounded">
+							<p class="text-white mb-3">Vous devez être connecté pour postuler à cette offre.</p>
+							<a href="{{ path('app_login') }}" class="inline-flex text-white bg-secondary border-0 py-2 px-6 focus:outline-none hover:bg-teal-700 rounded">Se connecter</a>
+						</div>
+					{% elseif hasApplied %}
+						<div class="bg-teal-900 text-white p-4 rounded">
+							<p>Vous avez déjà postulé à cette offre.</p>
+						</div>
+					{% else %}
+						{{ form_start(applicationForm, {'attr': {'class': 'flex flex-wrap -m-2'}}) }}
+						<div class="p-2 w-full">
+							<div class="relative">
+								{{ form_label(applicationForm.coverLetter, null, {'label_attr': {'class': 'leading-7 text-sm text-gray-400'}}) }}
+								{{ form_widget(applicationForm.coverLetter) }}
+								{{ form_errors(applicationForm.coverLetter) }}
+							</div>
+						</div>
+						<div class="p-2 w-full">
+							<button type="submit" class="flex mx-auto text-white bg-secondary border-0 py-2 px-8 focus:outline-none hover:bg-teal-700 rounded text-lg">Envoyer ma candidature</button>
+						</div>
+						{{ form_end(applicationForm) }}
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	</section>
 {% endblock %}
