@@ -83,4 +83,31 @@ final class JobController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+
+    #[Route('/jobs', name: 'app_job_list')]
+    public function list(Request $request, EntityManagerInterface $em): Response
+    {
+        $search = $request->query->get('search');
+        $repository = $em->getRepository(Job::class);
+
+        if ($search) {
+            // Recherche avec critère
+            $jobs = $repository->createQueryBuilder('j')
+                ->where('j.title LIKE :search')
+                ->orWhere('j.description LIKE :search')
+                ->orWhere('j.city LIKE :search')
+                ->orWhere('j.country LIKE :search')
+                ->setParameter('search', '%' . $search . '%')
+                ->orderBy('j.id', 'DESC')
+                ->getQuery()
+                ->getResult();
+        } else {
+            $jobs = $repository->findAll();
+        }
+
+        return $this->render('job/list.html.twig', [
+            'jobs' => $jobs,
+            'search' => $search
+        ]);
+    }
 }

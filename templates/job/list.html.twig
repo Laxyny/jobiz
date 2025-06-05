@@ -4,10 +4,26 @@
 {% block body %}
 	<section class="text-gray-400 bg-slate-700 body-font container px-5 py-14 mx-auto">
 		<div class="container px-5 py-24 mx-auto">
+			{% if search is defined and search %}
+				<div class="flex flex-col text-center w-full mb-12">
+					<h2 class="text-2xl font-medium title-font mb-4 text-white">Résultats de recherche pour: "{{ search }}"</h2>
+					<p class="lg:w-2/3 mx-auto text-base">
+						{{ jobs|length }}
+						résultat(s) trouvé(s)
+					</p>
+				</div>
+			{% endif %}
+
 			<div class="flex flex-wrap sm:-m-4 -mx-4 -mb-10 -mt-4">
-				{% for job in jobs %}
-					{% include 'jobs/_jobs_item.html.twig' with {'job': job} %}
-				{% endfor %}
+				{% if jobs|length > 0 %}
+					{% for job in jobs %}
+						{% include 'jobs/_jobs_item.html.twig' with {'job': job} %}
+					{% endfor %}
+				{% else %}
+					<div class="w-full text-center py-10">
+						<p class="text-xl text-white">Aucun job correspondant à votre recherche.</p>
+					</div>
+				{% endif %}
 			</div>
 		</div>
 	</section>
